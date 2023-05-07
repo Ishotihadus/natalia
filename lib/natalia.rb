@@ -2,7 +2,7 @@
 
 require_relative 'natalia/services/j_lyric'
 require_relative 'natalia/services/joysound'
-require_relative 'natalia/services/utamap'
+require_relative 'natalia/services/uta_net'
 require_relative 'natalia/version'
 
 module Natalia
@@ -44,7 +44,7 @@ module Natalia
 
   # 信頼できるソース順に並べる
   SERVICES = [
-    Natalia::Utamap,
+    Natalia::UtaNet,
     Natalia::JLyric,
     Natalia::Joysound
   ].freeze

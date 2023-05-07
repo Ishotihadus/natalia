@@ -4,7 +4,7 @@ require 'nokogiri'
 require_relative '../utils'
 
 module Natalia
-  module Utamap
+  module UtaNet
     SORT_MAP = {
       title: 1,
       title_desc: 2,
