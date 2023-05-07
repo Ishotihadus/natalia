@@ -53,6 +53,9 @@ module Natalia
     entries = []
     SERVICES.each do |service|
       entries += service.search(keyword, type: :title, sort: sort)
+    rescue StandardError
+      warn "Failed to search by #{service}"
+      warn $!.full_message
     end
     entries.map {|entry| Song.new(entry)}
   end
