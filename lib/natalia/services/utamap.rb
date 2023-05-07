@@ -19,8 +19,8 @@ module Natalia
     # @param [String] keyword キーワード（タイトル検索）、ID（それ以外）
     def self.search(keyword, type: :title, sort: :popularity_desc)
       sort = SORT_MAP[sort]
-      raise ArgumentError, 'invalid sort type' unless sort
-      raise ArgumentError, 'type must be :title, :artist, :lyricist, :composer, or :arranger' unless %i[title artist lyricist composer arranger].include?(type)
+      raise ArgumentError, "unsupported sort type `#{sort}`" unless sort
+      raise ArgumentError, "unsupported search type `#{type}`" unless %i[title artist lyricist composer arranger].include?(type)
 
       entries = []
       (type == :title ? 1.. : [1]).each do |page|

@@ -7,7 +7,7 @@ module Natalia
   module JLyric
     def self.search(keyword, type: :title, sort: nil)
       # sort という概念はないっぽい
-      raise ArgumentError, "unsupported type `#{type}`" unless type == :title
+      raise ArgumentError, "unsupported search type `#{type}`" unless type == :title
 
       entries = []
       (1..).each do |page|

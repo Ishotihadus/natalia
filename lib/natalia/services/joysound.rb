@@ -24,7 +24,8 @@ module Natalia
 
     def self.search(keyword, type: :title, sort: :popularity_desc)
       sort = SORT_MAP[sort]
-      raise ArgumentError, 'invalid sort type' unless sort
+      raise ArgumentError, "unsupported sort type `#{sort}`" unless sort
+      raise ArgumentError, "unsupported search type `#{type}`" unless KIND_MAP.key?(type)
 
       response = Natalia::Utils.curl_post('https://mspxy.joysound.com/Common/ContentsList') do |request|
         request.content_type = 'application/x-www-form-urlencoded; charset=UTF-8'
