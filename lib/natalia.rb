@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'natalia/services/j_lyric'
 require_relative 'natalia/services/joysound'
 require_relative 'natalia/services/utamap'
 require_relative 'natalia/version'
@@ -44,6 +45,7 @@ module Natalia
   # 信頼できるソース順に並べる
   SERVICES = [
     Natalia::Utamap,
+    Natalia::JLyric,
     Natalia::Joysound
   ].freeze
 
