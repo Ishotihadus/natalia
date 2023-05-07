@@ -1,14 +1,24 @@
 # frozen_string_literal: true
 
 require 'nokogiri'
+require 'time'
 require_relative '../utils'
 
 module Natalia
   module JLyric
-    def self.search(keyword, type: :title, sort: nil)
-      # sort という概念はないっぽい
-      raise ArgumentError, "unsupported search type `#{type}`" unless type == :title
+    # sort という概念はないっぽい
+    def self.search(keyword, type: :title, sort: :popularity_desc)
+      case type
+      when :title
+        search_by_title(keyword)
+      when :artist
+        search_by_artist(keyword, sort: sort)
+      else
+        raise ArgumentError, "unsupported search type `#{type}`"
+      end
+    end
 
+    def self.search_by_title(keyword)
       entries = []
       (1..).each do |page|
         response =
@@ -39,6 +49,48 @@ module Natalia
       end
 
       entries
+    end
+
+    def self.search_by_artist(artist_id, sort: :popularity_desc)
+      response = Natalia::Utils.curl_get("https://j-lyric.net/artist/#{artist_id}/")
+      response.value
+
+      doc = Nokogiri::HTML.parse(response.body)
+      artist_name = doc.at_css('div#mnb div.cnt div.cap h2').content.match(/\A(.+)の歌詞リスト\z/)[1]
+      table = doc.css('div#bas div#cnt div#mnb div.bdy[id^=ly]')
+
+      entries = table.map do |row|
+        order, date, popularity = row.css('input[type=hidden]').map {|e| e['value']}
+        {
+          source: self,
+          id: row.at_css('p.ttl a')['href'].match(%r{/artist/(.+)\.html\z})[1],
+          title: row.at_css('p.ttl a').content,
+          artist: artist_name,
+          artist_id: artist_id,
+          order: order.to_i,
+          date: Time.parse("#{date} JST"),
+          popularity: -popularity.to_i
+        }
+      end.compact
+
+      case sort
+      when :title
+        entries.sort_by {|e| e[:order]}
+      when :title_desc
+        entries.sort_by {|e| -e[:order]}
+      when :popularity
+        entries.sort_by {|e| e[:popularity]}
+      when :popularity_desc
+        entries.sort_by {|e| -e[:popularity]}
+      when :date
+        entries.sort_by {|e| e[:date]}
+      when :date_desc
+        entries.sort_by {|e| -e[:date].to_i}
+      when :artist, :artist_desc
+        entries
+      else
+        raise ArgumentError, "unsupported sort type `#{sort}`"
+      end
     end
 
     def self.get(id)
