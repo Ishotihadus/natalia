@@ -22,7 +22,7 @@ module Natalia
       entries = []
       (1..).each do |page|
         response =
-          Natalia::Utils.curl_get('https://search2.j-lyric.net/index.php', {
+          Natalia::Utils.curl_get('https://search3.j-lyric.net/index.php', {
                                     kt: keyword,
                                     ct: '2', # kt 検索方法 (0: 前方, 1: 完全, 2: 中間, 3: 後方)
                                     search: '検索', # 謎
